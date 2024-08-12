@@ -28,7 +28,7 @@ Run;
 
 data adlb1;
 set adlb;
-where parcat ="CHEMISTRY" and avisit= "DAY18" and aval ne . and anl0lfl="Y";
+where parcat ="HEMATOLOGY" and avisit= "DAY18" and aval ne . and anl0lfl="Y";
 run;
 
 
@@ -66,7 +66,7 @@ ods tagsets.rtf file-&output_path.\&dset..rtf" style clin_rtf" nogtitle nogfootn
 ods graphics/noborder height 5.6in width=10.0in;
 
 titlel "Figure 1.7.3.4";
-title2 "Box Plot of Chemistry observed Value at Day 18";
+title2 "Box Plot of Hematology observed Value at Day 18";
 titled "All Treated Subjects";
 
 footnote1  "Outlies are marked with * symbol";
