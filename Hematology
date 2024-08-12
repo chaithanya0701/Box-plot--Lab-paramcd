@@ -1,0 +1,80 @@
+
+##Box Plot of Hematology - Change from Baseline at Day 18 All Treated Subjects
+Outlier are marked with * symbol
+Doprojects/nida gbr12909/cpu0002/ia01/output/xx-xx.rtf
+Sun Mar 20 15:51:27 2022
+
+Programming Notes:
+1. Present treatment groups GBR75MG and PLACEBO on X-axis. User color differentiation between treatment groups.
+2. Y-axis is test results Y-axis label is test name and units.
+3. Present all regularly collected hematology. One test per each page.
+4. Present median line and overlay scatter plot with data points.##
+
+**Program **
+
+include "D:\projects\nida\gbr12909\cpu0002\ia01\programs\setup\setprog.sas";
+%let dset=f-box-chem-aval;
+
+proc sort data= adam.adlb out= _adlb;
+by paramn;
+run:
+
+proc format;
+value tg
+1"Placebo"
+2- GBR12909 50 mg"
+3-GBR12909 75 mg";
+Run;
+
+data adlb1;
+set adlb;
+where parcat ="CHEMISTRY" and avisit= "DAY18" and aval ne . and anl0lfl="Y";
+run;
+
+
+proc sql noprint;
+select count(distinct paramn) into: tot SEPARATED by " "
+from adib1;
+select distinct paramn into: par1- :par&tot.
+from adib1 (select param into:parami param
+from (select distinct peramn, param from adib )
+quit;
+
+data qcdata.f_box_chem_aval;
+set adlb 1;
+run;
+
+options mprint mlogic symbolgen;
+
+macro boxfig;
+%do i =1 %to & tot. ;
+proc sgplot data=adlb_1 noautolegend;
+where paramn &&&par&1. ;
+styleattrs datacolors= (red blue pink) datacontrastcolors= (red blue pink) datalinepatterns =(solid solid solid);
+vbox aval/category=trtan group=trtan nofill outlierattrs=(symbol=starfilled);
+xaxis label="Treatment Group";
+yaxis label ="&&&param&i. ; observed Value at Day 18";
+format trtan tg. ;
+Run;
+%end;
+%mend boxfig;
+
+/*REPORTING*/
+
+ods listing close;
+ods tagsets.rtf file-&output_path.\&dset..rtf" style clin_rtf" nogtitle nogfootnote;
+ods graphics/noborder height 5.6in width=10.0in;
+
+titlel "Figure 1.7.3.4";
+title2 "Box Plot of Chemistry observed Value at Day 18";
+titled "All Treated Subjects";
+
+footnote1  "Outlies are marked with * symbol";
+footnotel 2 j=1  "&tlf_path.\&dset..sapath.\saset.;
+
+%boxfig;
+ods tagsets.rtf close ;
+ods listing ;
+
+ScanMyLog(initials=kb);
+ 
